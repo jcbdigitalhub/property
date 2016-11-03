@@ -231,7 +231,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2016-11-01 08:53:13.721217", 
+ "modified": "2016-11-03 12:55:44.395811", 
  "modified_by": "Administrator", 
  "module": "Property", 
  "name": "Unit", 
@@ -263,6 +263,7 @@
  "quick_entry": 0, 
  "read_only": 0, 
  "read_only_onload": 0, 
+ "search_fields": "unit_number, description, unit_type", 
  "sort_field": "unit_number", 
  "sort_order": "DESC", 
  "track_seen": 0

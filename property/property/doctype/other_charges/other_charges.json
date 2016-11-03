@@ -208,7 +208,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2016-11-01 16:50:20.284988", 
+ "modified": "2016-11-03 12:51:24.238472", 
  "modified_by": "Administrator", 
  "module": "Property", 
  "name": "Other Charges", 
@@ -258,7 +258,7 @@
    "write": 1
   }
  ], 
- "quick_entry": 1, 
+ "quick_entry": 0, 
  "read_only": 0, 
  "read_only_onload": 0, 
  "sort_field": "modified", 
