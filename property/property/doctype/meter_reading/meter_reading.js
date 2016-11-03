@@ -13,6 +13,7 @@ frappe.ui.form.on('Meter Reading', {
 					var row = frappe.model.add_child(frm.doc, "Unit Meter Reading", "unit_reading");
 					row.unit = d.unit;
 					row.previous_reading = d.previous_reading;
+					row.unit_charge = d.unit_charge;
 				});
 			}
 			refresh_field("unit_reading");
