@@ -1,0 +1,46 @@
+
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015, Opensource Solutions Philippines and contributors
+# For license information, please see license.txt
+
+from __future__ import unicode_literals
+import frappe
+from frappe.model.document import Document
+
+class BillRun(Document):
+	pass
+
+	def generate(self):
+		bill = frappe.db.sql("""SELECT * FROM `tabUnit` u 
+			WHERE u.name IN (SELECT parent FROM `tabUnit Charge`); """, as_dict=1)
+
+		for i in bill:
+			doc = frappe.new_doc("Sales Invoice")
+			doc.customer = bill.customer
+			doc.series = self.series
+			doc.posting_date = self.date
+			total = 0
+
+			"Add Fixed Amounts"
+			item = frappe.db.sql("""SELECT * FROM `tabUnit Charge` uc,`tabCharge` c  
+				WHERE uc.charge = c.name 
+				AND c.charge_type = 'Fixed Amount'
+				AND uc.bill_run_type = %s
+				AND uc.parent = %s;""", (self. bill_run_type, i.unit), as_dict=1)
+			for j in item:
+				c_doc = doc.append('items',{})
+				c_doc.item_code = item.item
+				c_doc.item_name = item.description 
+				s_doc.descriptiom = item.description
+				s_doc.qty = 1
+				s_doc_rate = item.rate
+				s_doc_amount = item.rate
+				total = total + item.rate
+
+			"Add Meter Based Charges"
+
+
+			"Add Manual Charges"
+
+			doc.base_net_total = total
+			doc.save()

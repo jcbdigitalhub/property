@@ -4,5 +4,11 @@
 frappe.ui.form.on('Bill Run', {
 	refresh: function(frm) {
 
+	},
+
+	generate: function(frm) {
+		cur_frm.call('generate','', function(r){ }
+		);
 	}
+
 });
