@@ -30,7 +30,6 @@ class BillRun(Document):
 					doc.debit_to = get_party_account("Customer", doc.customer, doc.company)
 				doc.remarks = 'Billing for ' + i.unit + ' for the period ' + self.bill_period
 				doc.set_missing_values(False)
-				total = 0
 
 				"Add Fixed Amounts"
 				item = frappe.db.sql("""SELECT c.item as item, c.description as description, 
@@ -52,11 +51,36 @@ class BillRun(Document):
 					})
 
 				"Add Meter Based Charges"
+				mitem = frappe.db.sql("""SELECT c.item, c.description, mr.usage as qty, r.rate_per_kwh as rate 
+					FROM  `tabUnit Charge` uc, `tabMain Meter` m, `tabMeter Reading` r, `tabCharge` c, `tabUnit Meter Reading` mr
+					WHERE uc.charge = c.name 
+					AND c.charge_type = 'Meter'
+					AND uc.bill_run_type = %s
+					AND uc.parent = %s
+					AND r.bill_period = %s
+					AND r.name = mr.parent
+					AND r.main_meter = m.name
+					AND uc.name = mr.unit_charge;""", (self.bill_run_type, i.unit, self.bill_period), as_dict=1)
 
-
+				for m in mitem:
+                                        m_doc = doc.append('items',{
+                                                "item_code": m.item,
+                                                "item_name": m.description,
+                                                "description": m.description,
+                                                "qty": m.qty,
+                                                "rate": m.rate,
+                                                "amount": m.rate * m.qty
+                                        })
 
 				"Add Manual Charges"
 
 				doc.flags.ignore_mandatory = True
-				doc.base_net_total = total
 				doc.insert()
+
+				"Add Invoice Detail on Bill Run"
+				self.append('bill_run_invoices',{
+					"invoice": doc.name,
+					"date": doc.posting_date,
+					"customer":  doc.customer_name,
+					"amount": doc.total
+				})
