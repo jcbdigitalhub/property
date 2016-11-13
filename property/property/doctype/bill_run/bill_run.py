@@ -28,32 +28,35 @@ class BillRun(Document):
 					doc.due_date = get_due_date(doc.posting_date, "Customer", doc.customer, doc.company)
 				if not doc.debit_to:
 					doc.debit_to = get_party_account("Customer", doc.customer, doc.company)
-				msgprint(doc.due_date)
+				doc.remarks = 'Billing for ' + i.unit + ' for the period ' + self.bill_period
 				doc.set_missing_values(False)
 				total = 0
 
 				"Add Fixed Amounts"
-				item = frappe.db.sql("""SELECT * FROM `tabUnit Charge` uc,`tabCharge` c 
+				item = frappe.db.sql("""SELECT c.item as item, c.description as description, 
+					uc.rate as rate
+					FROM `tabUnit Charge` uc,`tabCharge` c 
 					WHERE uc.charge = c.name 
 					AND c.charge_type = 'Fixed Amount'
 					AND uc.bill_run_type = %s
 					AND uc.parent = %s;""", (self.bill_run_type, i.unit), as_dict=1)
 
 				for j in item:
-					c_doc = doc.append('items',{})
-					c_doc.item_code = j.item
-					c_doc.item_name = j.description 
-					c_doc.descriptiom = j.description
-					c_doc.qty = 1
-					c_doc.rate = j.rate
-					c_doc.amount = j.rate
-					c_doc.base_rate = j.rate * doc.conversion_rate
-                                        c_doc.base_amount = j.rate * doc.conversion_rate
-					total = total + j.rate
+					c_doc = doc.append('items',{
+						"item_code": j.item,
+						"item_name": j.description,
+						"description": j.description,
+						"qty": 1,
+						"rate": j.rate,
+						"amount": j.rate
+					})
 
 				"Add Meter Based Charges"
 
+
+
 				"Add Manual Charges"
 
+				doc.flags.ignore_mandatory = True
 				doc.base_net_total = total
 				doc.insert()
