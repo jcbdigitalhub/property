@@ -53,13 +53,14 @@ class BillRun(Document):
 				"Add Meter Based Charges"
 				mitem = frappe.db.sql("""SELECT c.item, c.description, mr.usage as qty, r.rate_per_kwh as rate 
 					FROM  `tabUnit Charge` uc, `tabMain Meter` m, `tabMeter Reading` r, `tabCharge` c, `tabUnit Meter Reading` mr
-					WHERE uc.charge = c.name 
+					WHERE uc.charge = c.name
 					AND c.charge_type = 'Meter'
 					AND uc.bill_run_type = %s
 					AND uc.parent = %s
 					AND r.bill_period = %s
 					AND r.name = mr.parent
 					AND r.main_meter = m.name
+					AND r.docstatus = 1
 					AND uc.name = mr.unit_charge;""", (self.bill_run_type, i.unit, self.bill_period), as_dict=1)
 
 				for m in mitem:
@@ -72,7 +73,68 @@ class BillRun(Document):
                                                 "amount": m.rate * m.qty
                                         })
 
+				"Add Unit Size Based Charges"
+				sitem = frappe.db.sql("""SELECT c.item as item, c.description as description, 
+					u.unit_size as qty, uc.rate as rate
+					FROM `tabUnit Charge` uc,`tabCharge` c, `tabUnit` u
+					WHERE uc.charge = c.name
+					AND u.name = uc.parent
+					AND c.charge_type = 'Unit Size'
+					AND uc.bill_run_type = %s
+					AND uc.parent = %s;""", (self.bill_run_type, i.unit), as_dict = 1)
+
+				for s in sitem:
+                                        m_doc = doc.append('items',{
+                                                "item_code": s.item,
+                                                "item_name": s.description,
+                                                "description": s.description,
+                                                "qty": s.qty,
+                                                "rate": s.rate,
+                                                "amount": s.rate * s.qty
+                                        })
+				
+				"Add Head Count Based Charges"
+				sitem = frappe.db.sql("""SELECT c.item as item, c.description as description, 
+					u.head_count as qty, uc.rate as rate
+					FROM `tabUnit Charge` uc,`tabCharge` c, `tabUnit` u
+					WHERE uc.charge = c.name
+					AND u.name = uc.parent
+					AND c.charge_type = 'Head Count'
+					AND uc.bill_run_type = %s
+					AND uc.parent = %s;""", (self.bill_run_type, i.unit), as_dict = 1)
+
+				for s in sitem:
+                                        m_doc = doc.append('items',{
+                                                "item_code": s.item,
+                                                "item_name": s.description,
+                                                "description": s.description,
+                                                "qty": s.qty,
+                                                "rate": s.rate,
+                                                "amount": s.rate * s.qty
+                                        })
+										
 				"Add Manual Charges"
+				sitem = frappe.db.sql("""SELECT c.item as item, c.description as description, 
+					ci.quantity as qty, ci.rate as rate
+					FROM `tabOther Charges` uc,`tabCharge` c, `tabUnit` u, `tabOther Charges Items` ci 
+					WHERE uc.unit = u.name
+					AND ci.parent = uc.name
+					AND ci.charge = c.name
+					AND uc.docstatus = 1
+					AND uc.bill_run_type = %s 
+					AND uc.unit = %s 
+					AND uc.bill_period = %s;""", 
+					(self.bill_run_type, i.unit, self.bill_period), as_dict = 1)
+
+				for s in sitem:
+                                        m_doc = doc.append('items',{
+                                                "item_code": s.item,
+                                                "item_name": s.description,
+                                                "description": s.description,
+                                                "qty": s.qty,
+                                                "rate": s.rate,
+                                                "amount": s.rate * s.qty
+                                        })
 
 				doc.flags.ignore_mandatory = True
 				doc.insert()
