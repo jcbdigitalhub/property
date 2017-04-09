@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 source_link = "https://github.com/ossphcorp/property"
 docs_base_url = "https://ossphcorp.github.io/property"
 headline = "PropertyNext"
@@ -16,3 +17,16 @@ def get_context(context):
 
 pass
 
+=======
+"""
+Configuration for docs
+"""
+
+# source_link = "https://github.com/[org_name]/property"
+# docs_base_url = "https://[org_name].github.io/property"
+# headline = "App that does everything"
+# sub_heading = "Yes, you got that right the first time, everything"
+
+def get_context(context):
+	context.brand_html = "Property"
+>>>>>>> 24818ab6e785efb4750865b8700ad5d2d359119a
