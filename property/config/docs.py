@@ -1,6 +1,5 @@
-<<<<<<< HEAD
-source_link = "https://github.com/ossphcorp/property"
-docs_base_url = "https://ossphcorp.github.io/property"
+source_link = "https://github.com/osstechnolab/property"
+docs_base_url = "https://osstechnolab.github.io/property"
 headline = "PropertyNext"
 sub_heading = "Property Management App for ERPNext"
 long_description = """(long description in markdown)"""
@@ -17,7 +16,6 @@ def get_context(context):
 
 pass
 
-=======
 """
 Configuration for docs
 """
@@ -29,4 +27,3 @@ Configuration for docs
 
 def get_context(context):
 	context.brand_html = "Property"
->>>>>>> 24818ab6e785efb4750865b8700ad5d2d359119a
