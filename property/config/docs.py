@@ -1,5 +1,5 @@
-source_link = "https://github.com/ossphcorp/property"
-docs_base_url = "https://ossphcorp.github.io/property"
+source_link = "https://github.com/osstechnolab/property"
+docs_base_url = "https://osstechnolab.github.io/property"
 headline = "PropertyNext"
 sub_heading = "Property Management App for ERPNext"
 long_description = """(long description in markdown)"""
