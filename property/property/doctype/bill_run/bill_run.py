@@ -25,7 +25,7 @@ class BillRun(Document):
 				"doc.due_date = self.date"
 				doc.company = self.company
 				if not doc.due_date and doc.customer:
-					doc.due_date = get_due_date(doc.posting_date, "Customer", doc.customer, doc.company)
+					doc.due_date = get_due_date(doc.posting_date, "Customer", doc.customer)
 				if not doc.debit_to:
 					doc.debit_to = get_party_account("Customer", doc.customer, doc.company)
 				doc.remarks = 'Billing for ' + i.unit + ' for the period ' + self.bill_period
