@@ -7,7 +7,7 @@ def get_data():
 		{
 			"module_name": "Property",
 			"color": "blue",
-			"icon": "icon-building",
+			"icon": "fa fa-building",
 			"type": "module",
 			"label": _("Property")
 		}
